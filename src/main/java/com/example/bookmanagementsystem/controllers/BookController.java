@@ -30,13 +30,13 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntityDTO<BookResponseDTO> createAuthor(@RequestBody BookRequestDTO bookRequestDTO) {
+    public ResponseEntityDTO<BookResponseDTO> createBook(@RequestBody BookRequestDTO bookRequestDTO) {
         return new ResponseEntityDTO<>(bookService.createBook(bookRequestDTO),
                 "Book Created Successfully!!!", HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntityDTO<BookResponseDTO> updateAuthor(@RequestBody BookRequestDTO bookRequestDTO) {
+    public ResponseEntityDTO<BookResponseDTO> updateBook(@RequestBody BookRequestDTO bookRequestDTO) {
         return new ResponseEntityDTO<>(bookService.updateBook(bookRequestDTO),
                 "Book Updated Successfully!!!", HttpStatus.OK);
     }
