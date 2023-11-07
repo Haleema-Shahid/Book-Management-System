@@ -1,6 +1,7 @@
 package com.example.bookmanagementsystem.controllers;
 
 import com.example.bookmanagementsystem.dtos.ResponseEntityDTO;
+import com.example.bookmanagementsystem.dtos.UserLoginDto;
 import com.example.bookmanagementsystem.dtos.UserPostDto;
 import com.example.bookmanagementsystem.dtos.UserResponseDto;
 import com.example.bookmanagementsystem.entities.UserEntity;
@@ -23,10 +24,12 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/login")
-    public ResponseEntityDTO<String> login(@RequestBody String email, @RequestParam String password) throws Exception {
+    public ResponseEntityDTO<String> login(@RequestBody UserLoginDto userLoginDto) throws Exception {
 
         String response ="Error occured during login...";
 
+        String email = userLoginDto.getEmail();
+        String password = userLoginDto.getPassword();
         response = userService.userLogin(email, password);
         if(response!=null){
             return new ResponseEntityDTO<>(response, "login successful!", HttpStatus.OK);
