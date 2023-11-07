@@ -22,6 +22,6 @@ public class AuthorEntity {
     private Date dateOfBirth;
     @Column(length = 1000)
     private String biography;
-    @OneToMany(mappedBy = "authorByAuthorId")
+    @OneToMany(mappedBy = "authorByAuthorId", cascade = CascadeType.ALL)
     private Set<BookEntity> booksByAuthorId;
 }

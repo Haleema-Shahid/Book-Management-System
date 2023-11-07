@@ -24,6 +24,4 @@ public class BookEntity {
     private String summary; //should have 500 chars max
     @ManyToOne
     private AuthorEntity authorByAuthorId;
-
-
 }
