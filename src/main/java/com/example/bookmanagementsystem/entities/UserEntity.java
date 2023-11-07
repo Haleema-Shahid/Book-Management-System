@@ -1,10 +1,7 @@
 package com.example.bookmanagementsystem.entities;
 
 import com.example.bookmanagementsystem.enums.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -28,7 +25,8 @@ public class UserEntity implements UserDetails {
     private int id;
     private String email;
     private String password;
-    private Enum<Role> role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -36,6 +34,8 @@ public class UserEntity implements UserDetails {
         authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
         return authorities;
     }
+
+
 
     @Override
     public String getUsername() {

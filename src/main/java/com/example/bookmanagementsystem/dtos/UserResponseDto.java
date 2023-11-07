@@ -12,5 +12,5 @@ import lombok.Setter;
 public class UserResponseDto {
     int id;
     String email;
-    Enum<Role> role;
+    Role role;
 }
