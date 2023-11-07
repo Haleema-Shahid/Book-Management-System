@@ -98,4 +98,16 @@ public class BookServiceImpl implements BookService{
         }
     }
 
+    @Override
+    public BookResponseDTO getBookByTitle(String title) {
+        Optional<BookEntity> optionalBookEntity = bookRepository.findByTitle(title);
+        if(optionalBookEntity.isPresent()) {
+            return optionalBookEntity.map(BookUtils::mapBookEntityToDTO).orElse(null);
+        }
+        else {
+            throw new NotFoundException("No Book Found By the Given Title!");
+        }
+    }
+
+
 }

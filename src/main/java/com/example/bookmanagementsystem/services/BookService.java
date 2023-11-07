@@ -10,4 +10,5 @@ public interface BookService {
     BookResponseDTO getBookById(Integer id);
     BookResponseDTO createBook(BookRequestDTO bookRequestDTO);
     BookResponseDTO updateBook(BookRequestDTO bookRequestDTO);
+    BookResponseDTO getBookByTitle(String title);
 }
