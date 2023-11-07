@@ -69,8 +69,7 @@ public class AuthorServiceImpl implements AuthorService {
                 // TODO: INVALID ARGUMENTS EXCEPTION
                 return null;
             }
-
-            AuthorEntity authorEntity = AuthorUtils.toAuthorEntity(authorEntityDTO);
+            AuthorEntity authorEntity = AuthorUtils.mapAuthorDTOToEntity(authorEntityDTO);
             authorRepository.save(authorEntity);
             return authorEntityDTO;
         }
