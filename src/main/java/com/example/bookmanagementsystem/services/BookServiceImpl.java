@@ -4,11 +4,10 @@ import com.example.bookmanagementsystem.dtos.BookRequestDTO;
 import com.example.bookmanagementsystem.dtos.BookResponseDTO;
 import com.example.bookmanagementsystem.entities.AuthorEntity;
 import com.example.bookmanagementsystem.entities.BookEntity;
-import com.example.bookmanagementsystem.exceptions.InternalErrorException;
+import com.example.bookmanagementsystem.exceptions.InvalidCredentialsException;
 import com.example.bookmanagementsystem.exceptions.NotFoundException;
 import com.example.bookmanagementsystem.repositories.AuthorRepository;
 import com.example.bookmanagementsystem.repositories.BookRepository;
-import com.example.bookmanagementsystem.utils.AuthorUtils;
 import com.example.bookmanagementsystem.utils.BookUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,26 +18,25 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BookServiceImpl implements BookService{
+public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
     @Override
     public List<BookResponseDTO> getAllBooks() {
-            List<BookEntity> bookEntities = bookRepository.findAll();
+        List<BookEntity> bookEntities = bookRepository.findAll();
 
-            return bookEntities.stream()
-                    .map(BookUtils::mapBookEntityToDTO)
-                    .collect(Collectors.toList());
-        }
+        return bookEntities.stream()
+                .map(BookUtils::mapBookEntityToDTO)
+                .collect(Collectors.toList());
+    }
 
 
     @Override
     public BookResponseDTO getBookById(Integer id) {
         Optional<BookEntity> optionalBookEntity = bookRepository.findById(id);
 
-        if(optionalBookEntity.isEmpty())
-        {
+        if (optionalBookEntity.isEmpty()) {
             throw new NotFoundException("Book Not Found!");
         }
         return optionalBookEntity.map(BookUtils::mapBookEntityToDTO).orElse(null);
@@ -48,15 +46,16 @@ public class BookServiceImpl implements BookService{
     @Override
     public BookResponseDTO createBook(BookRequestDTO bookRequestDTO) {
         BookEntity bookEntity = new BookEntity();
-
         bookEntity.setTitle(bookRequestDTO.getTitle());
-        bookEntity.setIsbn(bookRequestDTO.getIsbn());
+        String isbn = bookRequestDTO.getIsbn();
+        if (!BookUtils.isValidISBN(isbn))
+            throw new InvalidCredentialsException("ISBN not in correct format!");
+        bookEntity.setIsbn(isbn);
         bookEntity.setPublicationDate(bookRequestDTO.getPublicationDate());
         bookEntity.setSummary(bookRequestDTO.getSummary());
 
         Optional<AuthorEntity> optionalAuthor = authorRepository.findById(bookRequestDTO.getAuthorByAuthorId());
-        if(optionalAuthor.isEmpty())
-        {
+        if (optionalAuthor.isEmpty()) {
             throw new NotFoundException("Author Not Found!");
         }
 
@@ -77,13 +76,15 @@ public class BookServiceImpl implements BookService{
 
             // Update the fields in the entity with the data from the request DTO
             bookEntity.setTitle(bookRequestDTO.getTitle());
-            bookEntity.setIsbn(bookRequestDTO.getIsbn());
+            String isbn = bookRequestDTO.getIsbn();
+            if (!BookUtils.isValidISBN(isbn))
+                throw new InvalidCredentialsException("ISBN not in correct format!");
+            bookEntity.setIsbn(isbn);
             bookEntity.setPublicationDate(bookRequestDTO.getPublicationDate());
             bookEntity.setSummary(bookRequestDTO.getSummary());
 
             Optional<AuthorEntity> optionalAuthor = authorRepository.findById(bookRequestDTO.getAuthorByAuthorId());
-            if(optionalAuthor.isEmpty())
-            {
+            if (optionalAuthor.isEmpty()) {
                 throw new NotFoundException("Author Not Found!");
             }
 
@@ -101,10 +102,9 @@ public class BookServiceImpl implements BookService{
     @Override
     public BookResponseDTO getBookByTitle(String title) {
         Optional<BookEntity> optionalBookEntity = bookRepository.findByTitle(title);
-        if(optionalBookEntity.isPresent()) {
+        if (optionalBookEntity.isPresent()) {
             return optionalBookEntity.map(BookUtils::mapBookEntityToDTO).orElse(null);
-        }
-        else {
+        } else {
             throw new NotFoundException("No Book Found By the Given Title!");
         }
     }

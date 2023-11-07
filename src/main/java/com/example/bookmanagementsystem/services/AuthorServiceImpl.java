@@ -68,7 +68,7 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorEntityDTO createAuthor(AuthorEntityDTO authorEntityDTO) {
         if (
                 DateUtils.isDateInPast(authorEntityDTO.getDateOfBirth()) ||
-                        RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
+                        !RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
             throw new InvalidCredentialsException("Invalid Arguments!");
         }
         AuthorEntity authorEntity = AuthorUtils.mapAuthorDTOToEntity(authorEntityDTO);
@@ -87,7 +87,7 @@ public class AuthorServiceImpl implements AuthorService {
 
         if (
                 DateUtils.isDateInPast(authorEntityDTO.getDateOfBirth()) ||
-                        RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
+                        !RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
             throw new InvalidCredentialsException("Parameters Not Correct!");
         }
 
