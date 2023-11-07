@@ -1,13 +1,16 @@
 package com.example.bookmanagementsystem.services;
 
 import com.example.bookmanagementsystem.dtos.AuthorEntityDTO;
+import com.example.bookmanagementsystem.dtos.BookResponseDTO;
 import com.example.bookmanagementsystem.entities.AuthorEntity;
+import com.example.bookmanagementsystem.entities.BookEntity;
 import com.example.bookmanagementsystem.exceptions.InvalidCredentialsException;
 import com.example.bookmanagementsystem.exceptions.NotAuthorizedException;
 import com.example.bookmanagementsystem.exceptions.NotFoundException;
 import com.example.bookmanagementsystem.repositories.AuthorRepository;
 import com.example.bookmanagementsystem.repositories.BookRepository;
 import com.example.bookmanagementsystem.utils.AuthorUtils;
+import com.example.bookmanagementsystem.utils.BookUtils;
 import com.example.bookmanagementsystem.utils.DateUtils;
 import com.example.bookmanagementsystem.utils.RangeUtils;
 import lombok.Getter;
@@ -26,6 +29,8 @@ import java.util.stream.Collectors;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
+
+    private final BookRepository bookRepository;
 
     @Override
     public List<AuthorEntityDTO> getAllAuthors() {
@@ -54,7 +59,7 @@ public class AuthorServiceImpl implements AuthorService {
 
             if(optionalAuthor.isEmpty())
             {
-                throw new NotFoundException("Author Not Found");
+                throw new NotFoundException("Author Not Found!");
             }
             return optionalAuthor.map(AuthorUtils::toAuthorEntityDTO).orElse(null);
     }
@@ -75,7 +80,7 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorEntityDTO updateAuthor(AuthorEntityDTO authorEntityDTO) {
         Optional<AuthorEntity>  optionalAuthor = authorRepository.findById(authorEntityDTO.getId());
         if(optionalAuthor.isEmpty()) {
-            throw new NotFoundException("Author Not Found");
+            throw new NotFoundException("Author Not Found!");
         }
 
         AuthorEntity authorEntity = optionalAuthor.get();
@@ -104,5 +109,18 @@ public class AuthorServiceImpl implements AuthorService {
                 .biography(authorEntity.getBiography())
                 .build();
 
+    }
+
+    @Override
+    public List<BookResponseDTO> getBooksByAuthor(Integer id) {
+        Optional<AuthorEntity>  optionalAuthor = authorRepository.findById(id);
+        if(optionalAuthor.isEmpty()) {
+            throw new NotFoundException("Author Not Found!");
+        }
+
+        List<BookEntity> bookEntities = bookRepository.findByAuthorByAuthorId(optionalAuthor.get());
+        return bookEntities.stream()
+                .map(BookUtils::mapBookEntityToDTO)
+                .collect(Collectors.toList());
     }
 }
