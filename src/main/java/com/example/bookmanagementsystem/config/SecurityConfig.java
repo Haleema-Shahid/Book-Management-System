@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +30,11 @@ public class SecurityConfig {
     private final JWTAuthFilter jwtAuthFilter;
 
 
-
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().
+                requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
+    }
 
 
 
@@ -45,8 +51,8 @@ public class SecurityConfig {
         {
             auth
                     .requestMatchers(new AntPathRequestMatcher("/users/signup")).permitAll()
-                    //.requestMatchers(toH2Console()).permitAll()
-                    //.anyRequest().authenticated()
+                    //.requestMatchers(new AntPathRequestMatcher("/h2-console")).permitAll()
+
 
             ;
             //auth.requestMatchers("/signup").permitAll();
@@ -59,7 +65,8 @@ public class SecurityConfig {
 //        http.httpBasic(Customizer.withDefaults());
        // http.csrf(Customizer.withDefaults());
         http.cors(Customizer.withDefaults());
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.ignoringRequestMatchers(toH2Console()));
+        http.csrf(AbstractHttpConfigurer::disable);
+        //http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.ignoringRequestMatchers(toH2Console()));
         http.addFilterBefore(jwtAuthFilter, BasicAuthenticationFilter.class);
         return http.build();
     }

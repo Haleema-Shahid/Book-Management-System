@@ -48,7 +48,8 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 System.out.println("auth header is null...");
             }
             System.out.println("exiting jwtauthfilter");
-            filterChain.doFilter(request, response);
+            //return;
+            //filterChain.doFilter(request, response);
         }else {
             jwt = authHeader.substring(7);
             username = jwtService.extractUsername(jwt);//extract username from jwt token.
