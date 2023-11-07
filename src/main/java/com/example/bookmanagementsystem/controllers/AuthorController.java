@@ -1,8 +1,9 @@
 package com.example.bookmanagementsystem.controllers;
 
 import com.example.bookmanagementsystem.dtos.AuthorEntityDTO;
+import com.example.bookmanagementsystem.dtos.BookResponseDTO;
 import com.example.bookmanagementsystem.dtos.ResponseEntityDTO;
-import com.example.bookmanagementsystem.services.AuthorServiceImpl;
+import com.example.bookmanagementsystem.services.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @RequestMapping("/authors")
 public class AuthorController {
 
-    private final AuthorServiceImpl authorService;
+    private final AuthorService authorService;
 
     @GetMapping
     public ResponseEntityDTO<List<AuthorEntityDTO>> getAllAuthors()
@@ -43,5 +44,13 @@ public class AuthorController {
         authorEntityDTO = authorService.updateAuthor(authorEntityDTO);
 
         return new ResponseEntityDTO<>(authorEntityDTO, "Author Updated Successfully!!!", HttpStatus.OK);
+    }
+
+    @GetMapping("/books/{id}")
+    public ResponseEntityDTO<List<BookResponseDTO>> getBooksByAuthor(@PathVariable Integer id)
+    {
+        List<BookResponseDTO> bookResponseDTOS = authorService.getBooksByAuthor(id);
+
+        return new ResponseEntityDTO<>(bookResponseDTOS, "Books By Author = " + id, HttpStatus.OK);
     }
 }

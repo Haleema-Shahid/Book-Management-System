@@ -40,8 +40,8 @@ public class BookController {
         return new ResponseEntityDTO<>(bookService.updateBook(bookRequestDTO),
                 "Book Updated Successfully!!!", HttpStatus.OK);
     }
-    @GetMapping
-    public ResponseEntityDTO<BookResponseDTO> getBookByTitle(@RequestBody String title)
+    @GetMapping("/find/title/{title}")
+    public ResponseEntityDTO<BookResponseDTO> getBookByTitle(@PathVariable String title)
     {
         return new ResponseEntityDTO<>(bookService.getBookByTitle(title),
                 "Book Found Successfully",HttpStatus.OK);
