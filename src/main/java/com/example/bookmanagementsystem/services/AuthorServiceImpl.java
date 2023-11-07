@@ -50,78 +50,59 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorEntityDTO getAuthorById(Integer id) {
-        try {
             Optional<AuthorEntity> optionalAuthor = authorRepository.findById(id);
-            // TODO: AUTHOR NOT FOUND EXCEPTION
+
+            if(optionalAuthor.isEmpty())
+            {
+                throw new NotFoundException("Author Not Found");
+            }
             return optionalAuthor.map(AuthorUtils::toAuthorEntityDTO).orElse(null);
-        }
-        catch (Exception exception){
-            throw new NotFoundException("Author Not Found");
-        }
     }
 
     @Override
     public AuthorEntityDTO createAuthor(AuthorEntityDTO authorEntityDTO) {
-        try {
-            if (
-                    DateUtils.isDateInPast(authorEntityDTO.getDateOfBirth()) ||
-                            RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
-                // TODO: INVALID ARGUMENTS EXCEPTION
-                return null;
-            }
-            AuthorEntity authorEntity = AuthorUtils.mapAuthorDTOToEntity(authorEntityDTO);
-            authorRepository.save(authorEntity);
-            return authorEntityDTO;
-        }
-        catch (Exception exception){
+        if (
+                DateUtils.isDateInPast(authorEntityDTO.getDateOfBirth()) ||
+                        RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
             throw new InvalidCredentialsException("Invalid Arguments!");
         }
+        AuthorEntity authorEntity = AuthorUtils.mapAuthorDTOToEntity(authorEntityDTO);
+        authorRepository.save(authorEntity);
+        return authorEntityDTO;
     }
 
     @Override
     public AuthorEntityDTO updateAuthor(AuthorEntityDTO authorEntityDTO) {
-
-        try {
-            // TODO: NOT FOUND EXCEPTION in place of null
-            AuthorEntity authorEntity = authorRepository.findById(authorEntityDTO.getId()).orElse(null);
-
-            if (
-                    DateUtils.isDateInPast(authorEntityDTO.getDateOfBirth()) ||
-                            RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
-                // TODO: INVALID ARGUMENTS EXCEPTION
-                return null;
-            }
-
-            try {
-                if (authorEntity != null) {
-                    // Update AuthorEntity with data from AuthorEntityDTO
-                    authorEntity.setFirstName(authorEntityDTO.getFirstName());
-                    authorEntity.setLastName(authorEntityDTO.getLastName());
-                    authorEntity.setDateOfBirth(authorEntityDTO.getDateOfBirth());
-                    authorEntity.setBiography(authorEntityDTO.getBiography());
-
-                    // Save the updated AuthorEntity
-                    authorEntity = authorRepository.save(authorEntity);
-
-                    // Convert the updated AuthorEntity back to AuthorEntityDTO and return it
-                    return AuthorEntityDTO.builder()
-                            .id(authorEntity.getId())
-                            .firstName(authorEntity.getFirstName())
-                            .lastName(authorEntity.getLastName())
-                            .dateOfBirth(authorEntity.getDateOfBirth())
-                            .biography(authorEntity.getBiography())
-                            .build();
-                }
-            }
-            catch (Exception exception){
-                throw new InvalidCredentialsException("Parameters Not Correct!");
-            }
-
-            // TODO: NOT FOUND EXCEPTION in place of null
-            return null;
-        }
-        catch (Exception exception){
+        Optional<AuthorEntity>  optionalAuthor = authorRepository.findById(authorEntityDTO.getId());
+        if(optionalAuthor.isEmpty()) {
             throw new NotFoundException("Author Not Found");
         }
+
+        AuthorEntity authorEntity = optionalAuthor.get();
+
+        if (
+                DateUtils.isDateInPast(authorEntityDTO.getDateOfBirth()) ||
+                        RangeUtils.isLengthInRange(authorEntityDTO.getBiography(), 1000)) {
+            throw new InvalidCredentialsException("Parameters Not Correct!");
+        }
+
+        // Update AuthorEntity with data from AuthorEntityDTO
+        authorEntity.setFirstName(authorEntityDTO.getFirstName());
+        authorEntity.setLastName(authorEntityDTO.getLastName());
+        authorEntity.setDateOfBirth(authorEntityDTO.getDateOfBirth());
+        authorEntity.setBiography(authorEntityDTO.getBiography());
+
+        // Save the updated AuthorEntity
+        authorEntity = authorRepository.save(authorEntity);
+
+        // Convert the updated AuthorEntity back to AuthorEntityDTO and return it
+        return AuthorEntityDTO.builder()
+                .id(authorEntity.getId())
+                .firstName(authorEntity.getFirstName())
+                .lastName(authorEntity.getLastName())
+                .dateOfBirth(authorEntity.getDateOfBirth())
+                .biography(authorEntity.getBiography())
+                .build();
+
     }
 }
