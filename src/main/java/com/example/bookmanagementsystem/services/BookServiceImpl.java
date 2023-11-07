@@ -4,6 +4,8 @@ import com.example.bookmanagementsystem.dtos.BookRequestDTO;
 import com.example.bookmanagementsystem.dtos.BookResponseDTO;
 import com.example.bookmanagementsystem.entities.AuthorEntity;
 import com.example.bookmanagementsystem.entities.BookEntity;
+import com.example.bookmanagementsystem.exceptions.InternalErrorException;
+import com.example.bookmanagementsystem.exceptions.NotFoundException;
 import com.example.bookmanagementsystem.repositories.AuthorRepository;
 import com.example.bookmanagementsystem.repositories.BookRepository;
 import com.example.bookmanagementsystem.utils.AuthorUtils;
@@ -23,19 +25,22 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public List<BookResponseDTO> getAllBooks() {
-        List<BookEntity> bookEntities = bookRepository.findAll();
+            List<BookEntity> bookEntities = bookRepository.findAll();
 
-        return bookEntities.stream()
-                .map(BookUtils::mapBookEntityToDTO)
-                .collect(Collectors.toList());
-    }
+            return bookEntities.stream()
+                    .map(BookUtils::mapBookEntityToDTO)
+                    .collect(Collectors.toList());
+        }
 
 
     @Override
     public BookResponseDTO getBookById(Integer id) {
         Optional<BookEntity> optionalBookEntity = bookRepository.findById(id);
 
-        // TODO: NOT FOUND EXCEPTION in place of null
+        if(optionalBookEntity.isEmpty())
+        {
+            throw new NotFoundException("Book Not Found!");
+        }
         return optionalBookEntity.map(BookUtils::mapBookEntityToDTO).orElse(null);
     }
 
@@ -52,8 +57,7 @@ public class BookServiceImpl implements BookService{
         Optional<AuthorEntity> optionalAuthor = authorRepository.findById(bookRequestDTO.getAuthorByAuthorId());
         if(optionalAuthor.isEmpty())
         {
-            // TODO: AUTHOR NOT FOUND EXCEPTION
-            return null;
+            throw new NotFoundException("Author Not Found!");
         }
 
         bookEntity.setAuthorByAuthorId(optionalAuthor.get());
@@ -80,8 +84,7 @@ public class BookServiceImpl implements BookService{
             Optional<AuthorEntity> optionalAuthor = authorRepository.findById(bookRequestDTO.getAuthorByAuthorId());
             if(optionalAuthor.isEmpty())
             {
-                // TODO: AUTHOR NOT FOUND EXCEPTION
-                return null;
+                throw new NotFoundException("Author Not Found!");
             }
 
             bookEntity.setAuthorByAuthorId(optionalAuthor.get());
@@ -91,8 +94,7 @@ public class BookServiceImpl implements BookService{
 
             return BookUtils.mapBookEntityToDTO(bookEntity);
         } else {
-            // TODO: BOOK NOT FOUND EXCEPTION
-            return null;
+            throw new NotFoundException("Book Not Found");
         }
     }
 
