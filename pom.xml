@@ -108,8 +108,11 @@
                         </exclude>
                     </excludes>
                 </configuration>
+
             </plugin>
+
         </plugins>
+        <finalName>book-management-system</finalName>
     </build>
 
 </project>

@@ -1,0 +1,16 @@
+version: "0.0"
+
+services:
+  book-management-system:
+    image: haleemadocker/book-management-system:latest
+    container_name: book-management-container
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:booksystemdb
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.H2Dialect
+      - spring.jpa.hibernate.ddl-auto=update
+
