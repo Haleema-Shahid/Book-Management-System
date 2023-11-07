@@ -9,11 +9,11 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookEntityDTO {
+public class BookResponseDTO {
     private int id;
     private String title;
     private String isbn;
     private Date publicationDate;
-    private String summary; //should have 500 chars max
+    private String summary;
     private AuthorEntityDTO authorByAuthorId;
 }
