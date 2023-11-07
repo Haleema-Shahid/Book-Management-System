@@ -56,7 +56,7 @@ public class AuthorServiceImpl implements AuthorService {
             return null;
         }
 
-        AuthorEntity authorEntity = AuthorUtils.toAuthorEntity(authorEntityDTO);
+        AuthorEntity authorEntity = AuthorUtils.mapAuthorDTOToEntity(authorEntityDTO);
         authorRepository.save(authorEntity);
         return authorEntityDTO;
     }

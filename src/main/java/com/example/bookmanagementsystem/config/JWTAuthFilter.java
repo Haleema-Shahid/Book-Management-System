@@ -22,7 +22,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-//@RequiredArgsConstructor
 @Order(30)
 public class JWTAuthFilter extends OncePerRequestFilter {
 

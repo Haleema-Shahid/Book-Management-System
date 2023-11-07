@@ -1,5 +1,6 @@
 package com.example.bookmanagementsystem.dtos;
 
+import com.example.bookmanagementsystem.entities.AuthorEntity;
 import lombok.*;
 
 import java.util.Date;
@@ -15,4 +16,6 @@ public class BookRequestDTO {
     private String isbn;
     private Date publicationDate;
     private String summary;
+    private Integer authorByAuthorId;
+
 }

@@ -14,7 +14,7 @@ public class AuthorUtils {
                 .build();
     }
 
-    public static AuthorEntity toAuthorEntity(AuthorEntityDTO authorEntityDTO) {
+    public static AuthorEntity mapAuthorDTOToEntity(AuthorEntityDTO authorEntityDTO) {
         AuthorEntity authorEntity = new AuthorEntity();
         authorEntity.setId(authorEntityDTO.getId());
         authorEntity.setFirstName(authorEntityDTO.getFirstName());
